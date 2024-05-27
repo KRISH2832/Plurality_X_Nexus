@@ -70,12 +70,19 @@ const Header = () => {
                   {truncate(connectedAccount, 4, 4, 11)}
                 </button>
               ) : (
-                <button
-                  className="bg-gradient-to-r from-violet-400 to-violet-800 py-2 px-3 rounded-md text-white"
-                  onClick={connectWallet}
-                >
-                  Connect Wallet
-                </button>
+                <>
+                  <button
+                    className="bg-gradient-to-r from-violet-400 to-violet-800 py-2 px-3 rounded-md text-white"
+                    onClick={connectWallet}
+                  >
+                    Connect Wallet
+                  </button>
+                  <button
+                    className="bg-gradient-to-r from-violet-400 to-violet-800 py-2 px-3 rounded-md text-white"
+                  >
+                    Connect with Plurality
+                  </button>
+                </>
               )}
             </div>
           </div>
@@ -85,4 +92,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default Header;
