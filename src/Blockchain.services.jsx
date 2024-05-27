@@ -1,45 +1,60 @@
 import Web3 from 'web3'
 import { setGlobalState, getGlobalState } from './store'
 import abi from './abis/NexusDAO.json'
+import PluralitySocialConnect from 'plurality-social-connect';
 
 const { ethereum } = window
 window.web3 = new Web3(ethereum)
 window.web3 = new Web3(window.web3.currentProvider)
 
+const handleSocialLogin = async () => {
+  try {
+    const socialConnect = new PluralitySocialConnect({
+      options: { apps: 'facebook,twitter' },
+      onDataReturned: (data) => {
+        // Handle the data returned from the social connect
+        console.log("dapp receives:", data);
+        // You can also call the `connectWallet` function here to connect the user's wallet
+        connectWallet();
+      },
+    });
+    socialConnect.openSocialConnectPopup();
+  } catch (error) {
+    reportError(error);
+  }
+};
+
 const connectWallet = async () => {
   try {
-    if (!ethereum) return alert('Please install Metamask')
-    const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
-    setGlobalState('connectedAccount', accounts[0].toLowerCase())
+    if (!ethereum) return alert('Please install Metamask');
+    const socialConnect = new PluralitySocialConnect({
+      options: { apps: 'facebook,twitter' },
+      onDataReturned: (data) => {
+        // Handle the data returned from the social connect
+        console.log("dapp receives:", data);
+      },
+    });
+    socialConnect.openSocialConnectPopup();
   } catch (error) {
-    reportError(error)
+    reportError(error);
   }
-}
+};
 
 const isWallectConnected = async () => {
   try {
-    if (!ethereum) return alert('Please install Metamask')
-    const accounts = await ethereum.request({ method: 'eth_accounts' })
-
-    window.ethereum.on('chainChanged', (chainId) => {
-      window.location.reload()
-    })
-
-    window.ethereum.on('accountsChanged', async () => {
-      setGlobalState('connectedAccount', accounts[0].toLowerCase())
-      await isWallectConnected()
-    })
-
-    if (accounts.length) {
-      setGlobalState('connectedAccount', accounts[0].toLowerCase())
-    } else {
-      alert('Please connect wallet.')
-      console.log('No accounts found.')
-    }
+    if (!ethereum) return alert('Please install Metamask');
+    const socialConnect = new PluralitySocialConnect({
+      options: { apps: 'facebook,twitter' },
+      onDataReturned: (data) => {
+        // Handle the data returned from the social connect
+        console.log("dapp receives:", data);
+      },
+    });
+    socialConnect.openSocialConnectPopup();
   } catch (error) {
-    reportError(error)
+    reportError(error);
   }
-}
+};
 
 const getEtheriumContract = async () => {
   const connectedAccount = getGlobalState('connectedAccount')
@@ -97,7 +112,7 @@ const getInfo = async () => {
 
 const raiseProposal = async ({ title, description, beneficiary, amount }) => {
   try {
-    amount = window.web3.utils.toWei(amount.toString(), 'ether')
+    amount= window.web3.utils.toWei(amount.toString(), 'ether')
     const contract = await getEtheriumContract()
     const account = getGlobalState('connectedAccount')
 
@@ -195,6 +210,7 @@ const reportError = (error) => {
 export {
   isWallectConnected,
   connectWallet,
+  handleSocialLogin,
   performContribute,
   getInfo,
   raiseProposal,
